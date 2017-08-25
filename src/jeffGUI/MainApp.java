@@ -29,7 +29,7 @@ import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
-	// Define buttons here for access by multiple methods
+	// Make some buttons to use else where
 	private Button btnApply = new Button("Apply");
 	private Button btnExit = new Button("Exit");
 
@@ -38,6 +38,7 @@ public class MainApp extends Application {
 		primaryStage.setTitle("jeffGUI");
 
 		TabPane tabs = new TabPane();
+
 		Tab tabHome = new Tab();
 		tabHome.setText("Home");
 		tabHome.setContent(home());
@@ -48,157 +49,147 @@ public class MainApp extends Application {
 
 		tabs.getTabs().addAll(tabHome, tabLogin);
 
-		Scene scene = new Scene(tabs, 300, 400); // Manage scene size
+		Scene scene = new Scene(tabs, 600, 800); // Set the scene size here
 		primaryStage.setTitle("jeffGUI");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}	
 
 	/*
-	 * Creates the UI for the sizing sample, which demonstrates ways to manage
-	 * the size of controls when you don't want the default sizes.
+	 * create a pane named home that will serve as a simple CRUD app
 	 */
 	private Pane home() {
 
 		BorderPane border = new BorderPane();
-		border.setPadding(new Insets(20, 0, 20, 20));
+		border.setPadding(new Insets(20, 20, 20, 20));
+
+		VBox vb = new VBox(20);
+
+		HBox hb = new HBox();
+		Label labelAdd = new Label("Add: ");
+		TextField textAdd = new TextField();
+		textAdd.setPrefWidth(425);
+		hb.getChildren().addAll(labelAdd, textAdd);
 
 		ListView<String> list = new ListView<String>(); 
-		ObservableList<String> items = FXCollections.observableArrayList (
-				"Hot dog", "Hamburger", "French fries", 
-				"Carrot sticks", "Chicken salad");
-		list.setItems(items);
+		ObservableList<String> stuff = FXCollections.observableArrayList (
+				"Data", "Data1", "Data2", 
+				"Data3", "Data4");
+		list.setItems(stuff);
 		list.setMaxHeight(Control.USE_PREF_SIZE);
-		list.setPrefWidth(150.0);
+		list.setPrefWidth(450.0);
+
+		vb.getChildren().addAll(hb, list);	
+
 		Image img = new Image("http://mikecann.co.uk/wp-content/uploads/2009/12/javafx_logo_color_1.jpg");
 		ImageView imgView = new ImageView(img);
-		imgView.setFitWidth(250);
-		imgView.setPreserveRatio(true);
+		imgView.setFitWidth(550);
+		imgView.setPreserveRatio(true); // keep picture ratio
 		imgView.setSmooth(true);
-		imgView.setCache(true);
+		imgView.setCache(true); //cached for speed
 
-		border.setTop(imgView);
-		border.setLeft(list);    
-		border.setRight(createButtonColumn());  
-		border.setBottom(createButtonRow());  // Uses a tile pane for sizing
-		//        border.setBottom(createButtonBox());  // Uses an HBox, no sizing 
+		border.setTop(imgView); 
+		BorderPane.setMargin(imgView, new Insets(0, 0, 20, 0));
+		border.setLeft(vb);    
+		border.setRight(createRightMenu());  
+		border.setBottom(createBottomMenu()); 
 
 		return border;
 	}
 
 	/*
-	 * Creates the UI for the alignment sample, which demonstrates ways to manage
-	 * the alignment of controls when you don't want the default alignment.
+	 * Creates login page because I think its required but not 100% sure? 
+	 * will need to get creative with formatting to make it look good
 	 */
 	private Pane login() {
 
 		GridPane grid = new GridPane();
-		grid.setAlignment(Pos.CENTER);  // Override default
+		grid.setAlignment(Pos.CENTER);  
 		grid.setHgap(10);
 		grid.setVgap(12);
 
-		// Use column constraints to set properties for columns in the grid
-		ColumnConstraints column1 = new ColumnConstraints();
-		column1.setHalignment(HPos.RIGHT);  // Override default
-		grid.getColumnConstraints().add(column1); 
+		ColumnConstraints c1 = new ColumnConstraints();
+		c1.setHalignment(HPos.RIGHT);  
+		grid.getColumnConstraints().add(c1); 
 
-		ColumnConstraints column2 = new ColumnConstraints();
-		column2.setHalignment(HPos.LEFT);  // Override default
-		grid.getColumnConstraints().add(column2); 
+		ColumnConstraints c2 = new ColumnConstraints();
+		c2.setHalignment(HPos.LEFT);  
+		grid.getColumnConstraints().add(c2); 
 
-		HBox hbButtons = new HBox();
-		hbButtons.setSpacing(10.0);
-		hbButtons.setAlignment(Pos.CENTER);  // Aligns HBox and controls in HBox
+		HBox hb = new HBox();
+		hb.setSpacing(10.0);
+		hb.setAlignment(Pos.CENTER);
 
+		//make buttons
+		Button submit = new Button("Submit");
+		Button clear = new Button("Clear");
+		Button exit = new Button("Exit");
 
-		Button btnSubmit = new Button("Submit");
-		Button btnClear = new Button("Clear");
-		Button btnExit2 = new Button("Exit");
-		btnSubmit.setStyle("-fx-font-size: 15pt;");
+		//make login area
+		Label labelName = new Label("Username:");
+		TextField textName = new TextField();
+		Label labelPass = new Label("Password:");
+		PasswordField textPass = new PasswordField();
 
-		Label lblName = new Label("User name:");
-		TextField tfName = new TextField();
-		Label lblPwd = new Label("Password:");
-		PasswordField pfPwd = new PasswordField();
+		hb.getChildren().addAll(submit, clear, exit);
 
-		hbButtons.getChildren().addAll(btnSubmit, btnClear, btnExit2);
-		grid.add(lblName, 0, 0);
-		grid.add(tfName, 1, 0);
-		grid.add(lblPwd, 0, 1);
-		grid.add(pfPwd, 1, 1);
-		grid.add(hbButtons, 0, 2, 2, 1);
+		grid.add(labelName, 0, 0);
+		grid.add(textName, 1, 0);
+		grid.add(labelPass, 0, 1);
+		grid.add(textPass, 1, 1);
+		grid.add(hb, 0, 2, 2, 1);
 
-		      
-		hbButtons.setAlignment(Pos.BOTTOM_CENTER);
-		GridPane innergrid = new GridPane();
-		innergrid.setAlignment(Pos.CENTER);
-		innergrid.add(hbButtons, 0, 0);
-		grid.add(innergrid, 0, 2, 2, 1);
+		hb.setAlignment(Pos.BOTTOM_CENTER);
+
+		GridPane gp = new GridPane();
+		gp.setAlignment(Pos.CENTER);
+		gp.add(hb, 0, 0);
+		grid.add(gp, 0, 2, 2, 1);
 
 		return grid;
 	}
 
 	/*
-	 * Creates a column of buttons and makes them all the same width as the
-	 * largest button.
+	 * Creates buttons and sets them all to the same width
 	 */
-	private VBox createButtonColumn() { 
+	private VBox createRightMenu() { 
 
-		Button btnAdd = new Button("Add");
-		Button btnDelete = new Button("Delete");
-		Button btnMoveUp = new Button("Move Up");
-		Button btnMoveDown = new Button("Move Down");
+		//make buttons
+		Button add = new Button("Add");
+		Button delete = new Button("Delete");
+		Button up = new Button("Move Up");
+		Button down = new Button("Move Down");
 
-		// Comment out the following statements to see the default button sizes
-		btnAdd.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		btnDelete.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		btnMoveUp.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		btnMoveDown.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		btnMoveDown.setMinWidth(Control.USE_PREF_SIZE);
+		// make all buttons the same size
+		add.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		delete.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		up.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		down.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		down.setMinWidth(Control.USE_PREF_SIZE);
 
-		VBox vbButtons = new VBox();
-		vbButtons.setSpacing(10);
-		vbButtons.setPadding(new Insets(0, 20, 10, 20)); 
+		VBox vb = new VBox();
+		vb.setSpacing(10);
+		vb.setPadding(new Insets(0, 20, 10, 20)); 
+		vb.getChildren().addAll(add, delete, up, down);
 
-		vbButtons.getChildren().addAll(
-				btnAdd, btnDelete, btnMoveUp, btnMoveDown);
-
-		return vbButtons;
+		return vb;
 	}
 
 	/*
-	 * Creates a row of buttons and makes them all the same size.
+	 * Create buttons and set them to the same size
 	 */
-	private TilePane createButtonRow() {
+	private TilePane createBottomMenu() {
 
-		// Let buttons grow, otherwise they will be different sizes based
-		// on the length of the label
 		btnApply.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 		btnExit.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-		TilePane tileButtons = new TilePane(Orientation.HORIZONTAL);
-		tileButtons.setPadding(new Insets(20, 10, 20, 0));
-		tileButtons.setHgap(10.0);
-		tileButtons.setVgap(8.0); // In case window is reduced and buttons 
-		// require another row
-		tileButtons.getChildren().addAll(btnApply, btnExit);
+		TilePane tp = new TilePane(Orientation.HORIZONTAL);
+		tp.setPadding(new Insets(20, 10, 20, 0));
+		tp.setHgap(10.0);
+		tp.getChildren().addAll(btnApply, btnExit);
 
-		return tileButtons;
+		return tp;
 	}
-
-	/*
-	 * Creates a row of buttons with the default sizes.
-	 */
-	private HBox createButtonBox() { 
-
-		HBox hbButtons = new HBox();
-		hbButtons.setSpacing(10);
-		hbButtons.setPadding(new Insets(20, 10, 20, 0)); 
-		hbButtons.getChildren().addAll(btnApply, btnExit);
-
-		return hbButtons;
-	}
-
 
 	public static void main(String[] args) {
 		launch(args);
