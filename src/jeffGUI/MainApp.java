@@ -1,8 +1,12 @@
 package jeffGUI;
 
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -18,6 +22,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -26,6 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class MainApp extends Application {
 
@@ -88,13 +94,113 @@ public class MainApp extends Application {
 		imgView.setSmooth(true);
 		imgView.setCache(true); //cached for speed
 
+		spin(imgView);
+
+		//make buttons
+		Button add = new Button("Add");
+		Button delete = new Button("Delete");
+		Button up = new Button("Move Up");
+		Button down = new Button("Move Down");
+
+		// make all buttons the same size
+		add.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		delete.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		up.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		down.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		down.setMinWidth(Control.USE_PREF_SIZE);
+
+		VBox right = new VBox();
+		right.setSpacing(10);
+		right.setPadding(new Insets(0, 20, 10, 20)); 
+		right.getChildren().addAll(add, delete, up, down);
+
+		crud(textAdd, list, stuff, add, delete, up, down);
+
 		border.setTop(imgView); 
 		BorderPane.setMargin(imgView, new Insets(0, 0, 20, 0));
 		border.setLeft(vb);    
-		border.setRight(createRightMenu());  
+		border.setRight(right);  
 		border.setBottom(createBottomMenu()); 
 
 		return border;
+	}
+
+	private void spin(ImageView imgView) {
+		/*
+		 * Start rotation code
+		 * This is part of homework 2 part 1
+		 * Anonymous inner class stuff not lambdas
+		 */
+		RotateTransition rotate = new RotateTransition(Duration.seconds(1), imgView);
+		rotate.setByAngle(360);
+		rotate.setCycleCount(Animation.INDEFINITE);
+		rotate.setInterpolator(Interpolator.LINEAR);
+
+		//On mouse hover imgView will spin.
+		imgView.setOnMouseEntered(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				rotate.play();
+			}
+		});
+
+		imgView.setOnMouseExited(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				rotate.stop();
+				imgView.setRotate(0);
+			}
+		});
+	}
+
+	private void crud(TextField textAdd, ListView<String> list, ObservableList<String> stuff, Button add, Button delete,
+			Button up, Button down) {
+		/*
+		 * Start CRUD code
+		 * This is part of homework 2 part 2
+		 * lambdas!!!
+		 * 
+		 * in a normal world I would make each of these a method but to keep it together I did an all in one
+		 */
+		add.setOnAction(e-> {
+			String s = textAdd.getText();
+			if(!s.isEmpty()) {
+				stuff.add(s);
+			} 
+			textAdd.clear();
+
+		});
+
+		delete.setOnAction(e-> {
+			boolean check = list.getSelectionModel().isEmpty();
+			if(stuff.size()>=1 && !check) {
+			int index = list.getSelectionModel().getSelectedIndex();
+			list.getItems().remove(index);
+			}
+
+		});
+
+		up.setOnAction(e-> {
+			int index = list.getSelectionModel().getSelectedIndex();
+			boolean check = list.getSelectionModel().isEmpty();
+			if(index>=1 && !check) {
+				String hold = list.getSelectionModel().getSelectedItem();
+				list.getItems().remove(index);
+				stuff.add(index-1, hold);
+				list.getSelectionModel().select(index-1);
+			}
+		});
+
+		down.setOnAction(e-> {
+			int index = list.getSelectionModel().getSelectedIndex();
+			boolean check = list.getSelectionModel().isEmpty();
+			if(index<stuff.size()-1 && !check) {
+				String hold = list.getSelectionModel().getSelectedItem();
+				list.getItems().remove(index);
+				stuff.add(index+1, hold);
+				list.getSelectionModel().select(index+1);
+			}
+		});
 	}
 
 	/*
@@ -147,32 +253,6 @@ public class MainApp extends Application {
 		grid.add(gp, 0, 2, 2, 1);
 
 		return grid;
-	}
-
-	/*
-	 * Creates buttons and sets them all to the same width
-	 */
-	private VBox createRightMenu() { 
-
-		//make buttons
-		Button add = new Button("Add");
-		Button delete = new Button("Delete");
-		Button up = new Button("Move Up");
-		Button down = new Button("Move Down");
-
-		// make all buttons the same size
-		add.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		delete.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		up.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		down.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		down.setMinWidth(Control.USE_PREF_SIZE);
-
-		VBox vb = new VBox();
-		vb.setSpacing(10);
-		vb.setPadding(new Insets(0, 20, 10, 20)); 
-		vb.getChildren().addAll(add, delete, up, down);
-
-		return vb;
 	}
 
 	/*
