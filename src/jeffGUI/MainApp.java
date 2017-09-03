@@ -174,8 +174,8 @@ public class MainApp extends Application {
 		delete.setOnAction(e-> {
 			boolean check = list.getSelectionModel().isEmpty();
 			if(stuff.size()>=1 && !check) {
-			int index = list.getSelectionModel().getSelectedIndex();
-			list.getItems().remove(index);
+				int index = list.getSelectionModel().getSelectedIndex();
+				list.getItems().remove(index);
 			}
 
 		});
