@@ -78,13 +78,21 @@ public class MainApp extends Application {
 		hb.getChildren().addAll(labelAdd, textAdd);
 
 		ListView<String> list = new ListView<String>(); 
-		ObservableList<String> stuff = FXCollections.observableArrayList (
-				"Data", "Data1", "Data2", 
-				"Data3", "Data4");
-		list.setItems(stuff);
+		ObservableList<String> stuff = FXCollections.observableArrayList ();
+		// list.setItems(stuff);
 		list.setMaxHeight(Control.USE_PREF_SIZE);
 		list.setPrefWidth(450.0);
-
+		
+		AddSome addSome = new AddSome(stuff);
+		RemSome remSome = new RemSome(stuff);
+		Thread t1 = new Thread(addSome);
+		Thread t2 = new Thread(remSome);
+		t1.start();	
+		stuff = addSome.getSome();
+		t2.start();
+		stuff = remSome.getSome();
+		list.setItems(stuff);
+				
 		vb.getChildren().addAll(hb, list);	
 
 		Image img = new Image("http://mikecann.co.uk/wp-content/uploads/2009/12/javafx_logo_color_1.jpg");
@@ -274,4 +282,5 @@ public class MainApp extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+
 }
