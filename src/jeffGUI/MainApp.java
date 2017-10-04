@@ -83,14 +83,15 @@ public class MainApp extends Application {
 		list.setMaxHeight(Control.USE_PREF_SIZE);
 		list.setPrefWidth(450.0);
 		
+		for(int i = 1; i<=1000; i++) {
 		AddSome addSome = new AddSome(stuff);
 		RemSome remSome = new RemSome(stuff);
 		Thread t1 = new Thread(addSome);
 		Thread t2 = new Thread(remSome);
 		t1.start();	
-		stuff = addSome.getSome();
 		t2.start();
-		stuff = remSome.getSome();
+		}
+		
 		list.setItems(stuff);
 				
 		vb.getChildren().addAll(hb, list);	

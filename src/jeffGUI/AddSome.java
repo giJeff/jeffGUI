@@ -15,9 +15,14 @@ public class AddSome implements Runnable {
 
 	@Override
 	public void run() {
-		for(int i = 1; i <= 1000; i++) {
-			stuff.add("User" + i);
-		}
+		
+			try {
+				stuff.add("User" + stuff.size());				
+			} catch (Exception e) {
+				
+			}
+			System.out.println("Yolo");
+		
 	}
 	
 	public ObservableList<String> getSome () {

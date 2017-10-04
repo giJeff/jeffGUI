@@ -14,10 +14,14 @@ public class RemSome implements Runnable {
 
 	@Override
 	public void run() {
-		for(int i = 0; i < 1000; i++) {
-			stuff.remove(stuff.size()-1);
+		try {
+		if(stuff.size() != 0) {
+			stuff.remove(stuff.size()-1);			
 		}
-		
+		} catch (Exception e) {
+			
+		}
+		System.out.println("++++++++++");
 	}
 	
 	public ObservableList<String> getSome () {
